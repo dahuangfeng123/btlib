@@ -11,4 +11,14 @@
 {% endfor %}
 </ul>
 {% endif %}
+{% for vol in ln.get_volumes %}
+<details>
+<summary>{{ vol.name }}</summary>
+<ul>
+{% for chap in vol.get_chapters %}
+<li><a href="{{ chap.get_absolute_url }}">{{ chap.name }}</a></li>
+{% endfor %}
+</ul>
+</details>
+{% endfor %}
 {% endblock %}

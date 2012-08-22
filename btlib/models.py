@@ -32,6 +32,10 @@ class VolTrans(models.Model):
       name = models.CharField(max_length = 255)
       volume = models.ForeignKey('Volume')
       language = models.ForeignKey('Language')
+      def get_chapters(self):
+        chap_list = Translation.objects.filter( chapter__volume = self.volume ).filter( language = self.language )
+        chap_list = sorted(chap_list, key=lambda chap: chap.chapter.number)
+        return chap_list
       def __unicode__(self):
         return self.name
 
@@ -54,6 +58,10 @@ class SeriesTrans(models.Model):
       @models.permalink
       def get_absolute_url(self):
         return ('btlib.views.series',(),{'ln':self.pk})
+      def get_volumes(self):
+        vol_list = VolTrans.objects.filter( volume__series = self.series ).filter( language = self.language )
+        vol_list = sorted(vol_list, key=lambda vol: vol.volume.number)
+        return vol_list
       def __unicode__(self):
         return self.name
 
