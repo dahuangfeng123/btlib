@@ -1,0 +1,20 @@
+{% extends 'bakat/theme.html' %}
+{% block body %}
+<h1>Light Novel System Prototype</h1><br />
+{% if ln_list %}
+<h2>Light Novels</h2><br />
+<ul>
+{% for ln in ln_list %}
+<li><a href="/series/{{ln.id}}" >{{ ln.name }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+{% if lang_list %}
+<h2>Alternate Languages</h2><br />
+<ul>
+{% for lang in lang_list %}
+<li><a href="/lang/{{lang.id}}" >{{ lang.name }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
