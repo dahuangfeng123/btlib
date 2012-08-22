@@ -47,6 +47,24 @@ class Translation(models.Model):
       @models.permalink
       def get_absolute_url(self):
         return ('btlib.views.chapter',(),{'chap':self.pk})
+      def get_next(self):
+        next = Translation.objects.filter( chapter__volume = self.chapter.volume ).filter( chapter__number = self.number + 1).filter( language = self.language)
+        if next:
+           return next[0]
+        else:
+           return None
+      def get_prev(self):
+        next = Translation.objects.filter( chapter__volume = self.chapter.volume ).filter( chapter__number = self.number + 1).filter( language = self.language)
+        if next:
+           return next[0]
+        else:
+           return None
+      def get_series(self):
+          series = SeriesTrans.objects.filter( series = self.chapter.volume.series ).filter(language = self.language)
+          if series:
+             return series[0]
+          else: # If this happens, someone forgot to define the series translation before adding the translated chapters...
+             return None
       def __unicode__(self):
         return self.name
 
