@@ -21,12 +21,9 @@ def language(request, lang): #return a list of volumes in given language, and al
 def chapter(request, chap):
     ch = get_object_or_404(Translation, pk = chap)
     next = Translation.objects.filter(chapter__volume = ch.chapter.volume).filter(chapter__number = ch.chapter.number + 1).filter(language = ch.language)
-    if next:
-       next = next[0]
-    prev = Translation.objects.filter(chapter__volume = ch.chapter.volume).filter(chapter__number = ch.chapter.number - 1).filter(language = ch.language)
-    if prev:
-       prev = prev[0]
-    series = SeriesTrans.objects.filter( series = ch.chapter.volume.series ).filter( language = ch.language )
-    if series: # There better damn well be, otherwise someone messed up...
-          series = series[0]
-    return render_to_response('bakat/chapter.html',{'chap':ch,'next':next, 'prev':prev, 'up':series})
+    next = ch.get_next()
+    prev = ch.get_prev()
+    return render_to_response('bakat/chapter.html',{'chap':ch,'next':next, 'prev':prev})
+
+def api_base(request):
+    pass

@@ -48,13 +48,13 @@ class Translation(models.Model):
       def get_absolute_url(self):
         return ('btlib.views.chapter',(),{'chap':self.pk})
       def get_next(self):
-        next = Translation.objects.filter( chapter__volume = self.chapter.volume ).filter( chapter__number = self.number + 1).filter( language = self.language)
+        next = Translation.objects.filter( chapter__volume = self.chapter.volume ).filter( chapter__number = self.chapter.number + 1).filter( language = self.language)
         if next:
            return next[0]
         else:
            return None
       def get_prev(self):
-        next = Translation.objects.filter( chapter__volume = self.chapter.volume ).filter( chapter__number = self.number + 1).filter( language = self.language)
+        next = Translation.objects.filter( chapter__volume = self.chapter.volume ).filter( chapter__number = self.chapter.number - 1).filter( language = self.language)
         if next:
            return next[0]
         else:
