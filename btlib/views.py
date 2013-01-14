@@ -4,17 +4,17 @@ from django.conf import settings
 # Create your views here.
 
 def index(request): #return a list of volumes in default language (english), and alternate languages
-    ln_list = SeriesTrans.objects.filter(language__pk = settings.MAIN_LN_LANG)
+    ln_list = Project.objects.filter(language__pk = settings.MAIN_LN_LANG)
     lang_list = Language.objects.exclude( pk = settings.MAIN_LN_LANG)
     return render_to_response('bakat/index.html',{'ln_list':ln_list,'lang_list':lang_list})
 
-def series(request, ln):
-    ln = get_object_or_404(SeriesTrans, pk=ln)
+def novel(request, ln):
+    ln = get_object_or_404(Project, pk=ln)
     lang = SeriesTrans.objects.filter(series = ln.series).exclude(language = ln.language)
     return render_to_response('bakat/series.html',{'ln':ln, 'langs':lang})
 
 def language(request, lang): #return a list of volumes in given language, and alternate languages
-    ln_list = SeriesTrans.objects.filter(language__pk = lang)
+    ln_list = Project.objects.filter(language__pk = lang)
     lang_list = Language.objects.exclude( pk = lang)
     return render_to_response('bakat/lang.html',{'ln_list':ln_list,'lang_list':lang_list})
 
