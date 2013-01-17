@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from uuid import uuid4
+from diff_match_patch import diff_match_patch
+from btlib.functions import btParse
 # Create your models here.
 
 class Author(models.Model):
@@ -69,6 +71,16 @@ class Translation(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('btlib.views.chapter',(),{'chap':self.pk})
+    def save(self, *args, **kwargs):
+        patcher = diff_match_patch()
+        plist = [self.shown.diff,]
+        parent = self.shown.based_off
+        while parent:
+            plist += parent.diff
+            parent = parent.based_off
+        text = patcher.patch_apply(reversed(plist),’’)
+        self.shown_text = btParse(text)
+        super(Translation, self).save(*args, **kwargs)
     def get_next(self):
         next = Translation.objects.filter( chapter__volume = self.chapter.volume ).filter( chapter__number = self.chapter.number + 1).filter( language = self.language)
         if next:
@@ -95,6 +107,11 @@ class Revision(models.Model):
     submitter = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    diff = models.TextField()
+    based_off = models.ForeignKey('self', blank=True, null=True)
+
+class Note(models.Model):
+    rev = models.ForeignKey(Revision)
     text = models.TextField()
     
 
