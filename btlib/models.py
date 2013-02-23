@@ -82,7 +82,7 @@ class Translation(models.Model):
         while parent:
             plist += parent.diff
             parent = parent.based_off
-        text = patcher.patch_apply(reversed(plist),’’)
+        text = patcher.patch_apply(reversed(plist),'')
         self.shown_text = btParse(text)
         super(Translation, self).save(*args, **kwargs)
     def get_next(self):
