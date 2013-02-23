@@ -5,9 +5,13 @@ from uuid import uuid4
 
 class Author(models.Model):
     name = models.CharField(max_length = 256)
+    def __unicode__(self):
+        return self.name
 
 class Illustrator(models.Model):
     name = models.CharField(max_length = 256)
+    def __unicode__(self):
+        return self.name
 
 class Novel(models.Model):
     name = models.CharField(max_length = 255)
@@ -100,6 +104,8 @@ class Revision(models.Model):
 
 class Project_Type(models.Model):
     name = models.CharField(max_length=256)
+    def __unicode__(self):
+        return self.name
 
 class Project(models.Model):
     name = models.CharField(max_length = 256)
