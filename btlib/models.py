@@ -71,7 +71,7 @@ class Translation(models.Model):
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    shown = models.ForeignKey('Revision', on_delete = models.PROTECT, null=True, blank=True)
+    shown = models.ForeignKey('Revision', on_delete = models.PROTECT, null=True, blank=True, , related_name="shown+")
     @models.permalink
     def get_absolute_url(self):
         return ('btlib.views.chapter',(),{'chap':self.pk})
@@ -112,7 +112,7 @@ class Revision(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     diff = models.TextField()
-    based_off = models.ForeignKey('self', blank=True, null=True)
+    based_off = models.ForeignKey('self', blank=True, null=True, related_name="revision_set")
 
 class Note(models.Model):
     rev = models.ForeignKey(Revision)
