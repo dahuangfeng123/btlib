@@ -7,12 +7,12 @@ from btlib.functions import btParse
 
 class Author(models.Model):
     name = models.CharField(max_length = 256)
-    def __unicode__(self):
+    def __unicode__(self):	  	
         return self.name
 
 class Illustrator(models.Model):
     name = models.CharField(max_length = 256)
-    def __unicode__(self):
+    def __unicode__(self):	  	
         return self.name
 
 class Novel(models.Model):
@@ -26,12 +26,16 @@ class Volume(models.Model):
     novel = models.ForeignKey(Novel)
     number = models.PositiveIntegerField()
     isbn = models.CharField(max_length=17, blank=True)
-    year = models.PositiveSmallInteger(max_length=4)
+    year = models.PositiveSmallIntegerField(max_length=4)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    def uuid_gen(self):
+    def uuid_gen():
         return uuid4() # need to change this, I think...
+<<<<<<< HEAD
     uuid = models.SlugField(max_length=36, unique=True, default=uuid4())
+=======
+    uuid = models.SlugField(max_length=36, unique=True, default=uuid_gen())
+>>>>>>> 3916c64e8bb0a5a1c856376d7c23eeb97a77a26c
     def __unicode__(self):
         return self.novel.name +':'+ str(self.number)
 
@@ -71,7 +75,10 @@ class Translation(models.Model):
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+<<<<<<< HEAD
     shown = models.ForeignKey('Revision', on_delete = models.Protect, null=True, blank=True)
+=======
+>>>>>>> 3916c64e8bb0a5a1c856376d7c23eeb97a77a26c
     @models.permalink
     def get_absolute_url(self):
         return ('btlib.views.chapter',(),{'chap':self.pk})
@@ -121,7 +128,7 @@ class Note(models.Model):
 
 class Project_Type(models.Model):
     name = models.CharField(max_length=256)
-    def __unicode__(self):
+    def __unicode__(self):	  	
         return self.name
 
 class Project(models.Model):
