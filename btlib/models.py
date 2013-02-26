@@ -18,7 +18,7 @@ class Illustrator(models.Model):
 class Novel(models.Model):
     name = models.CharField(max_length = 255)
     author = models.ForeignKey(Author)
-    author = models.ForeignKey(Illustrator)
+    illustrator = models.ForeignKey(Illustrator)
     def __unicode__(self):
         return self.name
 
@@ -36,7 +36,7 @@ class Volume(models.Model):
         return self.novel.name +':'+ str(self.number)
 
 class Chapter(models.Model):
-    volume = models.ForeignKey('Volume')
+    volume = models.ForeignKey(Volume)
     number = models.PositiveIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -54,8 +54,8 @@ class Language(models.Model):
 
 class VolTrans(models.Model):
     name = models.CharField(max_length = 255)
-    volume = models.ForeignKey('Volume')
-    language = models.ForeignKey('Language')
+    volume = models.ForeignKey(Volume)
+    language = models.ForeignKey(Language)
     def get_chapters(self):
         chap_list = Translation.objects.filter( chapter__volume = self.volume ).filter( language = self.language ) # this could probably be turned into one filter with a comma...
         chap_list = sorted(chap_list, key=lambda chap: chap.chapter.number)
@@ -71,7 +71,7 @@ class Translation(models.Model):
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    shown = models.ForeignKey('Revision', on_delete = models.Protect, null=True, blank=True)
+    shown = models.ForeignKey('Revision', on_delete = models.PROTECT, null=True, blank=True)
     @models.permalink
     def get_absolute_url(self):
         return ('btlib.views.chapter',(),{'chap':self.pk})
