@@ -31,7 +31,7 @@ class Volume(models.Model):
     modified = models.DateTimeField(auto_now=True)
     def uuid_gen(self):
         return uuid4() # need to change this, I think...
-    uuid = models.SlugField(max_length=36, unique=True, default=self.uuid_gen())
+    uuid = models.SlugField(max_length=36, unique=True, default=uuid4())
     def __unicode__(self):
         return self.novel.name +':'+ str(self.number)
 
@@ -71,7 +71,7 @@ class Translation(models.Model):
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    shown = models.ForeignKey('Revision', limit_choices_to = {'translation':self}, on_delete = models.Protect, null=True, blank=True)
+    shown = models.ForeignKey('Revision', on_delete = models.Protect, null=True, blank=True)
     @models.permalink
     def get_absolute_url(self):
         return ('btlib.views.chapter',(),{'chap':self.pk})
