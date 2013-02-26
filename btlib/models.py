@@ -29,7 +29,7 @@ class Volume(models.Model):
     year = models.PositiveSmallIntegerField(max_length=4)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    def uuid_gen():
+    def uuid_gen(self):
         return uuid4() # need to change this, I think...
     uuid = models.SlugField(max_length=36, unique=True, default=uuid4())
     def __unicode__(self):
