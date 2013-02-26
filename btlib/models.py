@@ -7,12 +7,12 @@ from btlib.functions import btParse
 
 class Author(models.Model):
     name = models.CharField(max_length = 256)
-    def __unicode__(self):	  	
+    def __unicode__(self):
         return self.name
 
 class Illustrator(models.Model):
     name = models.CharField(max_length = 256)
-    def __unicode__(self):	  	
+    def __unicode__(self):
         return self.name
 
 class Novel(models.Model):
@@ -121,7 +121,7 @@ class Note(models.Model):
 
 class Project_Type(models.Model):
     name = models.CharField(max_length=256)
-    def __unicode__(self):	  	
+    def __unicode__(self):
         return self.name
 
 class Project(models.Model):
