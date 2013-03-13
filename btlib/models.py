@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from uuid import uuid4
 from diff_match_patch import diff_match_patch
 from btlib.functions import btParse
-# Create your models here.
 
 class Author(models.Model):
     name = models.CharField(max_length = 256)
@@ -29,7 +28,7 @@ class Volume(models.Model):
     year = models.PositiveSmallIntegerField(max_length=4)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    def uuid_gen(self):
+    def uuid_gen():
         return uuid4() # need to change this, I think...
     uuid = models.SlugField(max_length=36, unique=True, default=uuid4())
     def __unicode__(self):
@@ -82,7 +81,7 @@ class Translation(models.Model):
         while parent:
             plist += parent.diff
             parent = parent.based_off
-        text = patcher.patch_apply(reversed(plist),’’)
+        text = patcher.patch_apply(reversed(plist),'')
         self.shown_text = btParse(text)
         super(Translation, self).save(*args, **kwargs)
     def get_next(self):
