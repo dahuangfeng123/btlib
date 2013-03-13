@@ -18,4 +18,10 @@ setup(name='BTLib',
         'Natural Language :: English',
         'Topic :: Text Editors',
     ],
+    long_description=open('README.rst').read(),
+    install_requires=[
+        "Django >= 1.4.0",
+        "PIL>=1.1.7",
+        "diff-match-patch>=20120106",
+    ],
 )
