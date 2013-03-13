@@ -5,3 +5,5 @@ manage.py
 testsite
 media
 env
+MANIFEST
+dist
