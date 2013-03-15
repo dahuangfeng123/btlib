@@ -12,3 +12,4 @@ Initiated as an investigation into potential alternatives to mediaWiki for servi
 Contributors
 ============
 Michael Williams <draringi@draringi.net>
+Simon
