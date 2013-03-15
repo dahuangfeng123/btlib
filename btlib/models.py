@@ -56,7 +56,7 @@ class VolTrans(models.Model):
     volume = models.ForeignKey(Volume)
     language = models.ForeignKey(Language)
     def get_chapters(self):
-        chap_list = Translation.objects.filter( chapter__volume = self.volume ).filter( language = self.language ) # this could probably be turned into one filter with a comma...
+        chap_list = Translation.objects.filter( chapter__volume = self.volume, language = self.language )
         chap_list = sorted(chap_list, key=lambda chap: chap.chapter.number)
         return chap_list
     def __unicode__(self):
@@ -136,7 +136,7 @@ class Project(models.Model):
     def get_absolute_url(self):
       return ('btlib.views.novel',(),{'ln':self.pk})
     def get_volumes(self):
-        vol_list = VolTrans.objects.filter( volume__novel = self.novel ).filter( language = self.language )
+        vol_list = VolTrans.objects.filter( volume__novel = self.novel, language = self.language )
         vol_list = sorted(vol_list, key=lambda vol: vol.volume.number)
         return vol_list
     def __unicode__(self):
