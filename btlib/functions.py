@@ -1,4 +1,4 @@
-
+import markdown
 
 def btParse(text):
-    pass
+    return markdown.markdown(text)
