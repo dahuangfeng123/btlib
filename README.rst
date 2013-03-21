@@ -11,8 +11,8 @@ Initiated as an investigation into potential alternatives to mediaWiki for servi
 
 Contributors
 ============
-| 'Michael Williams'__ <draringi@draringi.net>
-| 'Simon'__ <admin@m-chan.org>
+| `Michael Williams`__ <draringi@draringi.net>
+| `Simon`__ <admin@m-chan.org>
 
 __ https://github.com/draringi
 __ https://github.com/Lord-Simon
