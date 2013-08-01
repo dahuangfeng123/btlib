@@ -2,7 +2,16 @@ language: python
 python:
   - "2.6"
   - "2.7"
+env:
+  - DJANGO=1.5.1
+  - MARKDOWN=2.3.1
+  - PIL=1.1.7
+  - DMP=20120106
 install:
+  - pip install -q Django==$DJANGO --use-mirrors
+  - pip install -q Markdown==$MARKDOWN --use-mirrors
+  - pip install -q PIL==$PIL --use-mirrors
+  - pip install -q diff-match-patch==$DMP --use-mirrors
   - pip install -q -e . --use-mirrors
 script:
   - python setup.py test
