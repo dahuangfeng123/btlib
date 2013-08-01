@@ -1,10 +1,7 @@
-BTLib
+BTLib [![Build Status](https://travis-ci.org/Lord-Simon/btlib.png?branch=master)](https://travis-ci.org/Lord-Simon/btlib)
 =======
 --------------------
 An Alternate Novel Hosting App
---------------------
-
-[![Build Status](https://travis-ci.org/Lord-Simon/btlib.png?branch=master)](https://travis-ci.org/Lord-Simon/btlib)
 
 Multi-Lingual Web Novel hosting platform, written in python for the Django framework.
 
