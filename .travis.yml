@@ -1,0 +1,14 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+env:
+  - DJANGO=1.5.1
+install:
+  - pip install -q PIL --use-mirrors
+  - pip install -q Django==$DJANGO --use-mirrors
+  - pip install -q Markdown --use-mirrors
+  - pip install -q diff-match-patch --use-mirrors
+  - pip install -q -e . --use-mirrors
+script:
+  - python setup.py test
