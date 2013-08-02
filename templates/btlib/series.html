@@ -1,0 +1,24 @@
+{% extends 'btlib/theme.html' %}
+{% block title %}BT Rebuild test - {{ ln.name }}{% endblock %}
+{% block body %}
+    <h1>{{ ln.name }}</h1>
+    <p>{{ ln.synopsis|markdown:"safe" }}</p>
+    {% if langs %}
+        <h3>This Light Novel is also available in the following languages</h3>
+        <ul>
+            {% for lang in langs %}
+                <li><a href="{{ lang.get_absolute_url }}">{{ lang.language }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% for vol in ln.get_volumes %}
+        <details>
+            <summary>{{ vol.name }}</summary>
+            <ul>
+                {% for chap in vol.get_chapters %}
+                    <li><a href="{{ chap.get_absolute_url }}">{{ chap.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </details>
+    {% endfor %}
+{% endblock %}
