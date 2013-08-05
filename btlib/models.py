@@ -36,7 +36,7 @@ class Volume(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
     uuid = models.SlugField(max_length = 36, unique = True, default = uuid4())
-
+    #test
     def save(self, *args, **kwargs):
         self.uuid = uuid4()
         super(Volume, self).save(*args, **kwargs)
