@@ -1,19 +1,91 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from uuid import uuid4
 from diff_match_patch import diff_match_patch
 from btlib.functions import btParse
 
+"""
+Make out of Chapter Type a Model that will be used in chapter and create a script that will automatically import the entries on first run.
+Further de/activate field should be added.
+
+Rethink the idea about adding parts to chapters.3
+
+
+"""
+CHAPTER_TYPE = (
+    ('CH', 'Chapter'),
+    ('PL', 'Prologue'),
+    ('EL', 'Epilogue'),
+    ('FW', 'Foreword'),
+    ('PF', 'Preface'),
+    ('ID', 'Introduction'),
+    ('AW', 'Afterword'),
+    ('PS', 'Postscript'),
+    ('FN', 'Footnotes'),
+    ('EN', 'End Notes'),
+)
+
 
 class Author(models.Model):
-    name = models.CharField(max_length = 256)
+    name = models.CharField(max_length = 256, unique = True)
+    url = models.URLField(max_length = 500, blank = True)
 
     def __unicode__(self):
         return self.name
 
 
 class Illustrator(models.Model):
-    name = models.CharField(max_length = 256)
+    name = models.CharField(max_length = 256, unique = True)
+    url = models.URLField(max_length = 500, blank = True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Genre(models.Model):
+    name = models.CharField(max_length = 256, unique = True)
+    url = models.URLField(max_length = 500, blank = True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Publisher(models.Model):
+    name = models.CharField(max_length = 256, unique = True)
+    url = models.URLField(max_length = 500, blank = True)
+
+    def __unicode__(self):
+        return self.name
+
+
+"""
+Active, Inactive, Frozen, Deleted, Licensed
+"""
+
+
+class ProjectStatus(models.Model):
+    name = models.CharField(max_length = 256, unique = True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class ProjectType(models.Model):
+    name = models.CharField(max_length = 256, unique = True)
+
+    def __unicode__(self):
+        return self.name
+
+
+"""
+Language model should follow the ISO 639-1 standard and probably integrate these on the first run
+"""
+
+
+class Language(models.Model):
+    name = models.CharField(max_length = 255)
+    iso = models.SlugField(max_length = 2, unique = True)
 
     def __unicode__(self):
         return self.name
@@ -22,21 +94,26 @@ class Illustrator(models.Model):
 class Novel(models.Model):
     name = models.CharField(max_length = 255)
     author = models.ForeignKey(Author)
-    illustrator = models.ForeignKey(Illustrator)
+    romajin = models.CharField(max_length = 255)
+    illustrator = models.ForeignKey(Illustrator, blank = True, null = True)
+    genre = models.ManyToManyField(Genre)
+    publisher = models.ForeignKey(Publisher)
 
     def __unicode__(self):
         return self.name
 
 
 class Volume(models.Model):
+    name = models.CharField(max_length = 255)
+    romajin = models.CharField(max_length = 255)
     novel = models.ForeignKey(Novel)
-    number = models.PositiveIntegerField()
+    number = models.FloatField(blank = True, null = True)
     isbn = models.CharField(max_length = 17, blank = True)
-    year = models.PositiveSmallIntegerField(max_length = 4)
+    year = models.PositiveSmallIntegerField(max_length = 4)# make out of it month and year
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
     uuid = models.SlugField(max_length = 36, unique = True, default = uuid4())
-    #test
+
     def save(self, *args, **kwargs):
         self.uuid = uuid4()
         super(Volume, self).save(*args, **kwargs)
@@ -46,8 +123,11 @@ class Volume(models.Model):
 
 
 class Chapter(models.Model):
+    name = models.CharField(max_length = 255)
+    romajin = models.CharField(max_length = 255)
     volume = models.ForeignKey(Volume)
-    number = models.PositiveIntegerField()
+    number = models.FloatField(blank = True, null = True)
+    order = models.FloatField(blank = True, null = True)
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
 
@@ -55,46 +135,65 @@ class Chapter(models.Model):
         return self.volume.novel.name + ":" + str(self.volume.number) + '-' + str(self.number)
 
 
-class Language(models.Model):
+class Project(models.Model):
     name = models.CharField(max_length = 255)
-    iso = models.SlugField(max_length = 2, unique = True)
-
-    @models.permalink
-    def get_absolute_url(self):
-        return ('btlib.views.language', (), {'lang':self.pk})
+    novel = models.ManyToManyField(Novel)
+    admin = models.ForeignKey(User)
+    status = models.ForeignKey(ProjectStatus)
+    created = models.DateTimeField(auto_now_add = True)
+    modified = models.DateTimeField(auto_now = True)
 
     def __unicode__(self):
         return self.name
 
 
-class VolTrans(models.Model):
+class ProjectTrans(models.Model):
     name = models.CharField(max_length = 255)
+    project = models.ForeignKey(Project)
+    language = models.ForeignKey(Language)
+    discription = models.TextField()
+    type = models.ForeignKey(ProjectType)
+    supervisor = models.ManyToManyField(User)
+    created = models.DateTimeField(auto_now_add = True)
+    modified = models.DateTimeField(auto_now = True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class NovelTrans(models.Model):
+    name = models.CharField(max_length = 255)
+    projecttrans = models.ForeignKey(ProjectTrans)
+    novel = models.ForeignKey(Novel)
+    synopsis = models.TextField()
+    created = models.DateTimeField(auto_now_add = True)
+    modified = models.DateTimeField(auto_now = True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class VolumeTrans(models.Model):
+    name = models.CharField(max_length = 255)
+    noveltrans = models.ForeignKey(NovelTrans)
     volume = models.ForeignKey(Volume)
-    language = models.ForeignKey(Language)
-
-    def get_chapters(self):
-        chap_list = Translation.objects.filter(chapter__volume = self.volume, language = self.language)
-        chap_list = sorted(chap_list, key = lambda chap:chap.chapter.number)
-        return chap_list
+    synopsis = models.TextField()
+    created = models.DateTimeField(auto_now_add = True)
+    modified = models.DateTimeField(auto_now = True)
 
     def __unicode__(self):
         return self.name
 
 
-class Translation(models.Model):
+class ChapterTrans(models.Model):
     name = models.CharField(max_length = 255)
-    language = models.ForeignKey(Language)
+    noveltrans = models.ForeignKey(VolTransTrans)
     chapter = models.ForeignKey(Chapter)
-    translator = models.ForeignKey(User)
     text = models.TextField()
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
     shown = models.ForeignKey('Revision', on_delete = models.PROTECT, null = True, blank = True,
                               related_name = "shown+")
-
-    @models.permalink
-    def get_absolute_url(self):
-        return ('btlib.views.chapter', (), {'chap':self.pk})
 
     def save(self, *args, **kwargs):
         patcher = diff_match_patch()
@@ -104,39 +203,15 @@ class Translation(models.Model):
             plist += parent.diff
             parent = parent.based_off
         text = patcher.patch_apply(reversed(plist), '')
-        self.shown_text = btParse(text)
-        super(Translation, self).save(*args, **kwargs)
-
-    def get_next(self):
-        next = Translation.objects.filter(chapter__volume = self.chapter.volume).filter(
-            chapter__number = self.chapter.number + 1).filter(language = self.language)
-        if next:
-            return next[0]
-        else:
-            return None
-
-    def get_prev(self):
-        next = Translation.objects.filter(chapter__volume = self.chapter.volume).filter(
-            chapter__number = self.chapter.number - 1).filter(language = self.language)
-        if next:
-            return next[0]
-        else:
-            return None
-
-    def get_series(self):
-        series = Project.objects.filter(novel = self.chapter.volume.novel).filter(language = self.language)
-        if series:
-            return series[0]
-        else: # If this happens, someone forgot to define the series translation before adding the translated chapters...
-            return None
+        self.text = btParse(text)
+        super(ChapterTrans, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
 
 
 class Revision(models.Model):
-    translation = models.ForeignKey(Translation)
-    submitter = models.ForeignKey(User)
+    chaptertrans = models.ForeignKey(ChapterTrans)
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
     diff = models.TextField()
@@ -148,43 +223,9 @@ class Note(models.Model):
     text = models.TextField()
 
 
-class Project_Type(models.Model):
-    name = models.CharField(max_length = 256)
-
-    def __unicode__(self):
-        return self.name
-
-
-class Project(models.Model):
-    name = models.CharField(max_length = 256)
-    language = models.ForeignKey(Language)
-    novel = models.ForeignKey(Novel)
-    project_type = models.ForeignKey(Project_Type)
-    supervisor = models.ForeignKey(User)
-    synopsis = models.TextField()
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
-
-    @models.permalink
-    def get_absolute_url(self):
-        return ('btlib.views.novel', (), {'ln':self.pk})
-
-    def get_volumes(self):
-        vol_list = VolTrans.objects.filter(volume__novel = self.novel, language = self.language)
-        vol_list = sorted(vol_list, key = lambda vol:vol.volume.number)
-        return vol_list
-
-    def __unicode__(self):
-        return self.name
-
-
 class Image(models.Model):
-    volume = models.ForeignKey('Volume', blank = True)
     image = models.ImageField(upload_to = 'images')
     subtext = models.TextField()
 
     def __unicode__(self):
         return self.image.name
-
-    def get_absolute_url(self):
-        return self.image.get_absolute_url()
