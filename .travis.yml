@@ -6,7 +6,7 @@ install:
   - pip install -q --use-mirrors -r requirements.txt
   - pip install -q -e . --use-mirrors
 script:
-  - coverage run --source=btlib quicktest.py
+  - coverage run --source=btlib quicktest.py btlib
   - coverage report -m
   - python quicktest.py btlib
 after_script:
