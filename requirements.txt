@@ -2,3 +2,5 @@ Django==1.5.2
 PIL==1.1.7
 diff-match-patch==20120106
 wsgiref==0.1.2
+argparse
+coverage
