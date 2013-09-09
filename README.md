@@ -1,4 +1,4 @@
-BTLib [![Build Status](https://travis-ci.org/Baka-Tsuki/btlib.png?branch=master)](https://travis-ci.org/Baka-Tsuki/btlib)
+BTLib [![Build Status](https://travis-ci.org/Baka-Tsuki/btlib.png?branch=master)](https://travis-ci.org/Baka-Tsuki/btlib) [![Coverage Status](https://coveralls.io/repos/Baka-Tsuki/btlib/badge.png)](https://coveralls.io/r/Baka-Tsuki/btlib)
 =======
 --------------------
 An Alternate Novel Hosting App
