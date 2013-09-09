@@ -1,20 +1,10 @@
 from django.conf.urls import patterns, include, url
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
-
-urlpatterns = patterns('',
-    # Examples:
-    url(r'^$', 'btlib.views.index'),
-    url(r'^series/(?P<ln>\d+)', 'btlib.views.series'),
-    url(r'^lang/(?P<lang>\d+)', 'btlib.views.language'),
-    url(r'^read/(?P<chap>\d+)', 'btlib.views.chapter'),
-    # url(r'^testsite/', include('testsite.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+urlpatterns = patterns('btlib.views',
+    url(r'^$', 'index', name='btlib_index'),
+    url(r'^form/get/(?P<frm>\w+)(?:/(?P<obj>\d+))?/$', 'form_get', name='btlib_form_get'),
+    url(r'^form/set/(?P<frm>\w+)(?:/(?P<obj>\d+))?/$', 'form_set', name='btlib_form_set'),
+    url(r'^catalogue/$', 'catalogue', name='btlib_catalogue'),
+    url(r'^catalogue/novel/(?P<nid>\d+)/$', 'catalogue_novel', name='btlib_catalogue_novel'),
+    url(r'^catalogue/volume/(?P<vid>\d+)/$', 'catalogue_volume', name='btlib_catalogue_volume'),
 )
