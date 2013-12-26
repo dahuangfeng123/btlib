@@ -46,7 +46,6 @@ class Illustrator(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length = 256, unique = True)
     url = models.URLField(max_length = 500, blank = True)
-
     def __unicode__(self):
         return self.name
 
@@ -71,10 +70,8 @@ class ProjectStatus(models.Model):
 
 class ProjectType(models.Model):
     name = models.CharField(max_length = 256, unique = True)
-
     def __unicode__(self):
         return self.name
-
 
 """
 Language model should follow the ISO 639-1 standard and probably integrate these on the first run
@@ -96,7 +93,6 @@ class Novel(models.Model):
     publisher = models.ForeignKey(Publisher)
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
-
     def __unicode__(self):
         return self.name
 
@@ -229,9 +225,9 @@ class Image(models.Model):
     image = models.ImageField(upload_to = 'images')
     subtext = models.TextField()
     user = models.ForeignKey(User)
-    novel = models.ForeignKey(Novel, null=True, blank=True)
-    volume = models.ForeignKey(Volume, null=True, blank=True)
-    chapter = models.ForeignKey(Chapter, null=True, blank=True)
+    novel = models.ForeignKey(Novel, null = True, blank = True)
+    volume = models.ForeignKey(Volume, null = True, blank = True)
+    chapter = models.ForeignKey(Chapter, null = True, blank = True)
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
 

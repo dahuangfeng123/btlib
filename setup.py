@@ -1,4 +1,5 @@
 from distutils.core import setup
+
 setup(name='BTLib',
     version='0.1a1',
     description='Multi-Lingual Novel Presentation Platform',

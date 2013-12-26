@@ -306,6 +306,6 @@ def form_get(request, frm, obj = None):
         else:
             form = FormImage()
     if form:
-        return render_to_response('btlib/form.html', {'form':form, 'key':form},
+        return render_to_response('btlib/form.html', {'form': form, 'key': form},
                                   ontext_instance = RequestContext(request))
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
