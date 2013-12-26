@@ -46,7 +46,11 @@ class ProjectType(models.Model):
 
 
 """
-Language model should follow the ISO 639-1 standard and probably integrate these on the first run
+Language Model
+
+Language model should follow the ISO 639-1 standard and probably integrate these on the first run.
+
+Returns Name field.
 """
 
 
@@ -77,9 +81,9 @@ Returns Name field.
 
 
 class Author(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
+    name = models.CharField(max_length=256, unique=True)
     bio = models.TextField(blank=True)
-    url = models.URLField(max_length = 500, blank = True)
+    url = models.URLField(max_length=500, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -98,9 +102,9 @@ Returns Name field.
 
 
 class Illustrator(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
+    name = models.CharField(max_length=256, unique=True)
     bio = models.TextField(blank=True)
-    url = models.URLField(max_length = 500, blank = True)
+    url = models.URLField(max_length=500, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -119,7 +123,7 @@ Returns Name field.
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
+    name = models.CharField(max_length=256, unique=True)
 
     def __unicode__(self):
         return self.name
@@ -138,11 +142,12 @@ Returns Name field.
 
 
 class Publisher(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
-    url = models.URLField(max_length = 500, blank = True)
+    name = models.CharField(max_length=256, unique=True)
+    url = models.URLField(max_length=500, blank=True)
 
     def __unicode__(self):
         return self.name
+
 
 """
 Novel Model
@@ -156,11 +161,13 @@ Fields illustrator, author, genre and publisher are liked to their own models.
 
 Returns Name field.
 """
+
+
 class Novel(models.Model):
-    name = models.CharField(max_length = 255)
+    name = models.CharField(max_length=255)
     author = models.ForeignKey(Author)
-    romajin = models.CharField(max_length = 255)
-    illustrator = models.ForeignKey(Illustrator, blank = True, null = True)
+    romajin = models.CharField(max_length=255)
+    illustrator = models.ForeignKey(Illustrator, blank=True, null=True)
     genre = models.ManyToManyField(Genre)
     publisher = models.ForeignKey(Publisher)
     created = models.DateTimeField(auto_now_add=True)
@@ -191,16 +198,16 @@ Returns (to be changed)
 
 
 class Volume(models.Model):
-    name = models.CharField(max_length = 255)
-    romajin = models.CharField(max_length = 255)
+    name = models.CharField(max_length=255)
+    romajin = models.CharField(max_length=255)
     novel = models.ForeignKey(Novel)
-    number = models.FloatField(blank = True, null = True)
-    isbn = models.CharField(max_length = 17, blank = True)
-    year = models.PositiveSmallIntegerField(max_length = 4)# make out of it month and year
+    number = models.FloatField(blank=True, null=True)
+    isbn = models.CharField(max_length=17, blank=True)
+    year = models.PositiveSmallIntegerField(max_length=4)# make out of it month and year
     order = models.FloatField(blank=True, null=True)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
-    uuid = models.SlugField(max_length = 36, unique = True, default = uuid4())
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    uuid = models.SlugField(max_length=36, unique=True, default=uuid4())
 
     def save(self, *args, **kwargs):
         self.uuid = uuid4()
@@ -227,13 +234,13 @@ Returns (to be changed)
 
 
 class Chapter(models.Model):
-    name = models.CharField(max_length = 255)
-    romajin = models.CharField(max_length = 255)
+    name = models.CharField(max_length=255)
+    romajin = models.CharField(max_length=255)
     volume = models.ForeignKey(Volume)
-    number = models.FloatField(blank = True, null = True)
-    order = models.FloatField(blank = True, null = True)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    number = models.FloatField(blank=True, null=True)
+    order = models.FloatField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.volume.novel.name + ":" + str(self.volume.number) + '-' + str(self.name)
@@ -248,12 +255,12 @@ Used to bundle multiple novels in case if they are cannonical.
 
 
 class Project(models.Model):
-    name = models.CharField(max_length = 255)
+    name = models.CharField(max_length=255)
     novel = models.ManyToManyField(Novel)
     admin = models.ForeignKey(User)
     status = models.ForeignKey(ProjectStatus)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
@@ -265,55 +272,61 @@ class Project(models.Model):
 #################
 """
 
+"""
+#########################
+#TRANSLATION LAYER START#
+#########################
+"""
 
-class ProjectTrans(models.Model):
-    name = models.CharField(max_length = 255)
+
+class ProjectTranslation(models.Model):
+    name = models.CharField(max_length=255)
     project = models.ForeignKey(Project)
     language = models.ForeignKey(Language)
     discription = models.TextField()
     type = models.ForeignKey(ProjectType)
     supervisor = models.ManyToManyField(User)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
 
 
-class NovelTrans(models.Model):
-    name = models.CharField(max_length = 255)
-    projecttrans = models.ForeignKey(ProjectTrans)
+class NovelTranslation(models.Model):
+    name = models.CharField(max_length=255)
+    projecttranslation = models.ForeignKey(ProjectTranslation)
     novel = models.ForeignKey(Novel)
     synopsis = models.TextField()
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
 
 
-class VolumeTrans(models.Model):
-    name = models.CharField(max_length = 255)
-    noveltrans = models.ForeignKey(NovelTrans)
+class VolumeTranslation(models.Model):
+    name = models.CharField(max_length=255)
+    noveltranslation = models.ForeignKey(NovelTranslation)
     volume = models.ForeignKey(Volume)
     synopsis = models.TextField()
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
 
 
-class ChapterTrans(models.Model):
-    name = models.CharField(max_length = 255)
-    noveltrans = models.ForeignKey(VolumeTrans)
+class ChapterTranslation(models.Model):
+    name = models.CharField(max_length=255)
+    noveltranslation = models.ForeignKey(VolumeTranslation)
     chapter = models.ForeignKey(Chapter)
     text = models.TextField()
     translator = models.ForeignKey(User)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
-    shown = models.ForeignKey('Revision', on_delete = models.PROTECT, null = True, blank = True,
-                              related_name = "shown+")
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    shown = models.ForeignKey('Revision', on_delete=models.PROTECT, null=True, blank=True,
+                              related_name="shown+")
 
     def save(self, *args, **kwargs):
         patcher = diff_match_patch()
@@ -324,19 +337,19 @@ class ChapterTrans(models.Model):
             parent = parent.based_off
         text = patcher.patch_apply(reversed(plist), '')
         self.text = btParse(text)
-        super(ChapterTrans, self).save(*args, **kwargs)
+        super(ChapterTranslation, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
 
 
 class Revision(models.Model):
-    chaptertrans = models.ForeignKey(ChapterTrans)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    chaptertranslation = models.ForeignKey(ChapterTranslation)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     diff = models.TextField()
-    based_off = models.ForeignKey('self', blank = True, null = True, related_name = "revision_set")
+    based_off = models.ForeignKey('self', blank=True, null=True, related_name="revision_set")
 
 
 class Note(models.Model):
@@ -346,8 +359,15 @@ class Note(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
 
+"""
+#########################
+# TRANSLATION LAYER END #
+#########################
+"""
+
+
 class Image(models.Model):
-    image = models.ImageField(upload_to = 'images')
+    image = models.ImageField(upload_to='images')
     subtext = models.TextField()
     user = models.ForeignKey(User)
     novel = models.ForeignKey(Novel, null=True, blank=True)
