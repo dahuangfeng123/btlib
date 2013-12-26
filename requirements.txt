@@ -1,4 +1,4 @@
-Django==1.5.1
-PIL==1.1.7
+Django<=1.6.1
+Pillow<=2.2.2
 diff-match-patch==20120106
 wsgiref==0.1.2

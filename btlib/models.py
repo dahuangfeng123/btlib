@@ -62,8 +62,6 @@ class Publisher(models.Model):
 """
 Active, Inactive, Frozen, Deleted, Licensed
 """
-
-
 class ProjectStatus(models.Model):
     name = models.CharField(max_length = 256, unique = True)
 
@@ -81,8 +79,6 @@ class ProjectType(models.Model):
 """
 Language model should follow the ISO 639-1 standard and probably integrate these on the first run
 """
-
-
 class Language(models.Model):
     name = models.CharField(max_length = 255)
     iso = models.SlugField(max_length = 2, unique = True)
@@ -98,6 +94,8 @@ class Novel(models.Model):
     illustrator = models.ForeignKey(Illustrator, blank = True, null = True)
     genre = models.ManyToManyField(Genre)
     publisher = models.ForeignKey(Publisher)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
@@ -187,9 +185,10 @@ class VolumeTrans(models.Model):
 
 class ChapterTrans(models.Model):
     name = models.CharField(max_length = 255)
-    noveltrans = models.ForeignKey(VolTransTrans)
+    noveltrans = models.ForeignKey(VolumeTrans)
     chapter = models.ForeignKey(Chapter)
     text = models.TextField()
+    translator = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
     shown = models.ForeignKey('Revision', on_delete = models.PROTECT, null = True, blank = True,
@@ -214,6 +213,7 @@ class Revision(models.Model):
     chaptertrans = models.ForeignKey(ChapterTrans)
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
+    user = models.ForeignKey(User)
     diff = models.TextField()
     based_off = models.ForeignKey('self', blank = True, null = True, related_name = "revision_set")
 
@@ -221,11 +221,19 @@ class Revision(models.Model):
 class Note(models.Model):
     rev = models.ForeignKey(Revision)
     text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
 
 class Image(models.Model):
     image = models.ImageField(upload_to = 'images')
     subtext = models.TextField()
+    user = models.ForeignKey(User)
+    novel = models.ForeignKey(Novel, null=True, blank=True)
+    volume = models.ForeignKey(Volume, null=True, blank=True)
+    chapter = models.ForeignKey(Chapter, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.image.name

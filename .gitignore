@@ -8,6 +8,8 @@ env
 MANIFEST
 dist
 dev
+.SyncID
+.SyncIgnore
 
 *.py[cod]
 
@@ -58,6 +60,7 @@ lib-cov
 pids
 logs
 results
+Vagrantfile
 
 npm-debug.log
 node_modules
