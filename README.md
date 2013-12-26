@@ -1,4 +1,4 @@
-BTLib [![Build Status](https://travis-ci.org/Lord-Simon/btlib.png?branch=master)](https://travis-ci.org/Lord-Simon/btlib)
+BTLib [![Build Status](https://travis-ci.org/Lord-Simon/btlib.png?branch=master)](https://travis-ci.org/Lord-Simon/btlib) [![Coverage Status](https://coveralls.io/repos/Lord-Simon/btlib/badge.png)](https://coveralls.io/r/Lord-Simon/btlib)
 =======
 --------------------
 An Alternate Novel Hosting App
