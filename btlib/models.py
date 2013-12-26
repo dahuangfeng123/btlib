@@ -88,6 +88,9 @@ class Author(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 
 """
 Illustrator Model
@@ -109,6 +112,9 @@ class Illustrator(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 
 """
 Genre Model
@@ -127,6 +133,9 @@ class Genre(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
 
 
 """
@@ -147,6 +156,9 @@ class Publisher(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
 
 
 """
@@ -175,6 +187,9 @@ class Novel(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        ordering = ['romajin', 'name']
 
 
 """
@@ -216,6 +231,9 @@ class Volume(models.Model):
     def __unicode__(self):
         return self.novel.name + ':' + str(self.number)
 
+    class Meta:
+        ordering = ['order', 'number', 'created']
+
 
 """
 Chapter Model
@@ -245,6 +263,9 @@ class Chapter(models.Model):
     def __unicode__(self):
         return self.volume.novel.name + ":" + str(self.volume.number) + '-' + str(self.name)
 
+    class Meta:
+        ordering = ['order', 'number', 'created']
+
 
 """
 Project Model
@@ -264,6 +285,9 @@ class Project(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name', 'created']
 
 
 """
