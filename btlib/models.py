@@ -9,7 +9,7 @@ from btlib.functions import btParse
 Make out of Chapter Type a Model that will be used in chapter and create a script that will automatically import the entries on first run.
 Further de/activate field should be added.
 
-Rethink the idea about adding parts to chapters.3
+Rethink the idea about adding parts to chapters.
 
 
 """
@@ -26,29 +26,115 @@ CHAPTER_TYPE = (
     ('EN', 'End Notes'),
 )
 
+"""
+Active, Inactive, Frozen, Deleted, Licensed
+"""
+
+
+class ProjectStatus(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class ProjectType(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+"""
+Language model should follow the ISO 639-1 standard and probably integrate these on the first run
+"""
+
+
+class Language(models.Model):
+    name = models.CharField(max_length=255)
+    iso = models.SlugField(max_length=2, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+"""
+#################
+#CATALOGUE START#
+#################
+"""
+
+"""
+Author Model
+
+Contains the Name of the potential Author, the URI to his/her Blog and his Bio.
+
+Name field is obligatory.
+Bio and URL are optional.
+
+Returns Name field.
+"""
+
 
 class Author(models.Model):
     name = models.CharField(max_length = 256, unique = True)
+    bio = models.TextField(blank=True)
     url = models.URLField(max_length = 500, blank = True)
 
     def __unicode__(self):
         return self.name
+
+
+"""
+Illustrator Model
+
+Contains the Name of the potential Illustrator, the URI to his/her Blog and his Bio.
+
+Name field is obligatory.
+Bio and URL are optional.
+
+Returns Name field.
+"""
 
 
 class Illustrator(models.Model):
     name = models.CharField(max_length = 256, unique = True)
+    bio = models.TextField(blank=True)
     url = models.URLField(max_length = 500, blank = True)
 
     def __unicode__(self):
         return self.name
+
+
+"""
+Genre Model
+
+Contains the Name of the possible Genre
+
+Name field is obligatory.
+Max length is 256 characters.
+
+Returns Name field.
+"""
 
 
 class Genre(models.Model):
     name = models.CharField(max_length = 256, unique = True)
-    url = models.URLField(max_length = 500, blank = True)
 
     def __unicode__(self):
         return self.name
+
+
+"""
+Publisher Model
+
+Contains the Name of the Novel's publisher
+
+Name field is obligatory.
+Max length is 256 characters.
+
+Returns Name field.
+"""
 
 
 class Publisher(models.Model):
@@ -58,35 +144,18 @@ class Publisher(models.Model):
     def __unicode__(self):
         return self.name
 
-
 """
-Active, Inactive, Frozen, Deleted, Licensed
+Novel Model
+
+Under Novel is to understand a publication of multiple Volumes that run under one Name.
+
+Name field should be, if possible, the original Title. In it's original language.
+Romajin field is for the romanification of the field Name
+
+Fields illustrator, author, genre and publisher are liked to their own models.
+
+Returns Name field.
 """
-class ProjectStatus(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
-
-    def __unicode__(self):
-        return self.name
-
-
-class ProjectType(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
-
-    def __unicode__(self):
-        return self.name
-
-
-"""
-Language model should follow the ISO 639-1 standard and probably integrate these on the first run
-"""
-class Language(models.Model):
-    name = models.CharField(max_length = 255)
-    iso = models.SlugField(max_length = 2, unique = True)
-
-    def __unicode__(self):
-        return self.name
-
-
 class Novel(models.Model):
     name = models.CharField(max_length = 255)
     author = models.ForeignKey(Author)
@@ -101,6 +170,26 @@ class Novel(models.Model):
         return self.name
 
 
+"""
+Volume Model
+
+Volume model depends on Novel model.
+
+Name field should be, if possible, the original Title. In it's original language.
+Romajin field is for the romanification of the field Name
+
+Number is to be used if the volume has a numerical counting. If not, use the order field, to order the novels.
+
+Order field is to be used to order the volumes in a specific order. Accepts float numbers(some people like this...).
+
+ISBN field accepts max. 17 characters.(for now)
+
+Year field it to be used to derterminate the date of publication of the volume.
+
+Returns (to be changed)
+"""
+
+
 class Volume(models.Model):
     name = models.CharField(max_length = 255)
     romajin = models.CharField(max_length = 255)
@@ -108,6 +197,7 @@ class Volume(models.Model):
     number = models.FloatField(blank = True, null = True)
     isbn = models.CharField(max_length = 17, blank = True)
     year = models.PositiveSmallIntegerField(max_length = 4)# make out of it month and year
+    order = models.FloatField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
     uuid = models.SlugField(max_length = 36, unique = True, default = uuid4())
@@ -120,6 +210,22 @@ class Volume(models.Model):
         return self.novel.name + ':' + str(self.number)
 
 
+"""
+Chapter Model
+
+Chapter model is depends on Volume model.
+
+Name field should be, if possible, the original Title. In it's original language.
+Romajin field is for the romanification of the field Name
+
+Number is to be used if the volume has a numerical counting. If not, use the order field, to order the novels.
+
+Order field is to be used to order the volumes in a specific order. Accepts float numbers.
+
+Returns (to be changed)
+"""
+
+
 class Chapter(models.Model):
     name = models.CharField(max_length = 255)
     romajin = models.CharField(max_length = 255)
@@ -130,7 +236,15 @@ class Chapter(models.Model):
     modified = models.DateTimeField(auto_now = True)
 
     def __unicode__(self):
-        return self.volume.novel.name + ":" + str(self.volume.number) + '-' + str(self.number)
+        return self.volume.novel.name + ":" + str(self.volume.number) + '-' + str(self.name)
+
+
+"""
+Project Model
+
+Used to bundle multiple novels in case if they are cannonical.
+
+"""
 
 
 class Project(models.Model):
@@ -143,6 +257,13 @@ class Project(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+"""
+#################
+# CATALOGUE END #
+#################
+"""
 
 
 class ProjectTrans(models.Model):
