@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from uuid import uuid4
 from diff_match_patch import diff_match_patch
+import hashlib
 from btlib.functions import btParse
 
 """
@@ -183,34 +184,34 @@ class ChapterTrans(models.Model):
     name = models.CharField(max_length = 255)
     noveltrans = models.ForeignKey(VolumeTrans)
     chapter = models.ForeignKey(Chapter)
-    text = models.TextField()
     translator = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
     shown = models.ForeignKey('Revision', on_delete = models.PROTECT, null = True, blank = True,
                               related_name = "shown+")
 
-    def save(self, *args, **kwargs):
-        patcher = diff_match_patch()
-        plist = [self.shown.diff, ]
-        parent = self.shown.based_off
-        while parent:
-            plist += parent.diff
-            parent = parent.based_off
-        text = patcher.patch_apply(reversed(plist), '')
-        self.text = btParse(text)
-        super(ChapterTrans, self).save(*args, **kwargs)
+    def text(self):
+        return self.shown.data.text
 
     def __unicode__(self):
         return self.name
 
+
+class Data(models.Model):
+    checksum = models.CharField(max_length = 255)
+    text = models.TextField()
+    @property
+    def generate_checksum(self):
+        hasher = hashlib.sha1()
+        hasher.update(self.text)
+        return hasher.hexdigest()
 
 class Revision(models.Model):
     chaptertrans = models.ForeignKey(ChapterTrans)
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
     user = models.ForeignKey(User)
-    diff = models.TextField()
+    data = models.ForeignKey(Data)
     based_off = models.ForeignKey('self', blank = True, null = True, related_name = "revision_set")
 
 
