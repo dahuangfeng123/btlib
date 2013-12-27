@@ -62,6 +62,7 @@ pids
 logs
 results
 Vagrantfile
+.vagrant
 
 npm-debug.log
 node_modules

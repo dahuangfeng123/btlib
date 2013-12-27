@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from btlib.feeds import Feed
 
 urlpatterns = patterns('django.contrib.flatpages.views',
                        url(r'^$', 'flatpage', {'url': '/'}, name='btlib_index'),
