@@ -10,7 +10,7 @@ from btlib.functions import btParse
 Make out of Chapter Type a Model that will be used in chapter and create a script that will automatically import the entries on first run.
 Further de/activate field should be added.
 
-Rethink the idea about adding parts to chapters.3
+Rethink the idea about adding parts to chapters.
 
 
 """
@@ -27,18 +27,20 @@ CHAPTER_TYPE = (
     ('EN', 'End Notes'),
 )
 
+"""
+Active, Inactive, Frozen, Deleted, Licensed
+"""
 
-class Author(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
-    url = models.URLField(max_length = 500, blank = True)
+
+class ProjectStatus(models.Model):
+    name = models.CharField(max_length=256, unique=True)
 
     def __unicode__(self):
         return self.name
 
 
-class Illustrator(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
-    url = models.URLField(max_length = 500, blank = True)
+class ProjectType(models.Model):
+    name = models.CharField(max_length=256, unique=True)
 
     def __unicode__(self):
         return self.name
@@ -47,49 +49,142 @@ class Illustrator(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length = 256, unique = True)
     url = models.URLField(max_length = 500, blank = True)
+
+"""
+Language Model
+
+Language model should follow the ISO 639-1 standard and probably integrate these on the first run.
+
+Returns Name field.
+"""
+
+
+class Language(models.Model):
+    name = models.CharField(max_length=255)
+    iso = models.SlugField(max_length=2, unique=True)
+
     def __unicode__(self):
         return self.name
+
+
+"""
+#################
+#CATALOGUE START#
+#################
+"""
+
+"""
+Author Model
+
+Contains the Name of the potential Author, the URI to his/her Blog and his Bio.
+
+Name field is obligatory.
+Bio and URL are optional.
+
+Returns Name field.
+"""
+
+
+class Author(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+    bio = models.TextField(blank=True)
+    url = models.URLField(max_length=500, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
+"""
+Illustrator Model
+
+Contains the Name of the potential Illustrator, the URI to his/her Blog and his Bio.
+
+Name field is obligatory.
+Bio and URL are optional.
+
+Returns Name field.
+"""
+
+
+class Illustrator(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+    bio = models.TextField(blank=True)
+    url = models.URLField(max_length=500, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
+"""
+Genre Model
+
+Contains the Name of the possible Genre
+
+Name field is obligatory.
+Max length is 256 characters.
+
+Returns Name field.
+"""
+
+
+class Genre(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
+"""
+Publisher Model
+
+Contains the Name of the Novel's publisher
+
+Name field is obligatory.
+Max length is 256 characters.
+
+Returns Name field.
+"""
 
 
 class Publisher(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
-    url = models.URLField(max_length = 500, blank = True)
+    name = models.CharField(max_length=256, unique=True)
+    url = models.URLField(max_length=500, blank=True)
 
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 
 """
-Active, Inactive, Frozen, Deleted, Licensed
+Novel Model
+
+Under Novel is to understand a publication of multiple Volumes that run under one Name.
+
+Name field should be, if possible, the original Title. In it's original language.
+Romajin field is for the romanification of the field Name
+
+Fields illustrator, author, genre and publisher are liked to their own models.
+
+Returns Name field.
 """
-class ProjectStatus(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
-
-    def __unicode__(self):
-        return self.name
-
-
-class ProjectType(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
-    def __unicode__(self):
-        return self.name
-
-"""
-Language model should follow the ISO 639-1 standard and probably integrate these on the first run
-"""
-class Language(models.Model):
-    name = models.CharField(max_length = 255)
-    iso = models.SlugField(max_length = 2, unique = True)
-
-    def __unicode__(self):
-        return self.name
 
 
 class Novel(models.Model):
-    name = models.CharField(max_length = 255)
+    name = models.CharField(max_length=255)
     author = models.ForeignKey(Author)
-    romajin = models.CharField(max_length = 255)
-    illustrator = models.ForeignKey(Illustrator, blank = True, null = True)
+    romajin = models.CharField(max_length=255)
+    illustrator = models.ForeignKey(Illustrator, blank=True, null=True)
     genre = models.ManyToManyField(Genre)
     publisher = models.ForeignKey(Publisher)
     created = models.DateTimeField(auto_now_add = True)
@@ -97,17 +192,41 @@ class Novel(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        ordering = ['romajin', 'name']
+
+
+"""
+Volume Model
+
+Volume model depends on Novel model.
+
+Name field should be, if possible, the original Title. In it's original language.
+Romajin field is for the romanification of the field Name
+
+Number is to be used if the volume has a numerical counting. If not, use the order field, to order the novels.
+
+Order field is to be used to order the volumes in a specific order. Accepts float numbers(some people like this...).
+
+ISBN field accepts max. 17 characters.(for now)
+
+Year field it to be used to derterminate the date of publication of the volume.
+
+Returns (to be changed)
+"""
+
 
 class Volume(models.Model):
-    name = models.CharField(max_length = 255)
-    romajin = models.CharField(max_length = 255)
+    name = models.CharField(max_length=255)
+    romajin = models.CharField(max_length=255)
     novel = models.ForeignKey(Novel)
-    number = models.FloatField(blank = True, null = True)
-    isbn = models.CharField(max_length = 17, blank = True)
-    year = models.PositiveSmallIntegerField(max_length = 4)# make out of it month and year
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
-    uuid = models.SlugField(max_length = 36, unique = True, default = uuid4())
+    number = models.FloatField(blank=True, null=True)
+    isbn = models.CharField(max_length=17, blank=True)
+    year = models.PositiveSmallIntegerField(max_length=4)# make out of it month and year
+    order = models.FloatField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    uuid = models.SlugField(max_length=36, unique=True, default=uuid4())
 
     def save(self, *args, **kwargs):
         self.uuid = uuid4()
@@ -116,79 +235,125 @@ class Volume(models.Model):
     def __unicode__(self):
         return self.novel.name + ':' + str(self.number)
 
+    class Meta:
+        ordering = ['order', 'number', 'created']
+
+
+"""
+Chapter Model
+
+Chapter model is depends on Volume model.
+
+Name field should be, if possible, the original Title. In it's original language.
+Romajin field is for the romanification of the field Name
+
+Number is to be used if the volume has a numerical counting. If not, use the order field, to order the novels.
+
+Order field is to be used to order the volumes in a specific order. Accepts float numbers.
+
+Returns (to be changed)
+"""
+
 
 class Chapter(models.Model):
-    name = models.CharField(max_length = 255)
-    romajin = models.CharField(max_length = 255)
+    name = models.CharField(max_length=255)
+    romajin = models.CharField(max_length=255)
     volume = models.ForeignKey(Volume)
-    number = models.FloatField(blank = True, null = True)
-    order = models.FloatField(blank = True, null = True)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    number = models.FloatField(blank=True, null=True)
+    order = models.FloatField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return self.volume.novel.name + ":" + str(self.volume.number) + '-' + str(self.number)
+        return self.volume.novel.name + ":" + str(self.volume.number) + '-' + str(self.name)
+
+    class Meta:
+        ordering = ['order', 'number', 'created']
+
+
+"""
+Project Model
+
+Used to bundle multiple novels in case if they are cannonical.
+
+"""
 
 
 class Project(models.Model):
-    name = models.CharField(max_length = 255)
+    name = models.CharField(max_length=255)
     novel = models.ManyToManyField(Novel)
     admin = models.ForeignKey(User)
     status = models.ForeignKey(ProjectStatus)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name', 'created']
 
-class ProjectTrans(models.Model):
-    name = models.CharField(max_length = 255)
+
+"""
+#################
+# CATALOGUE END #
+#################
+"""
+
+"""
+#########################
+#TRANSLATION LAYER START#
+#########################
+"""
+
+
+class ProjectTranslation(models.Model):
+    name = models.CharField(max_length=255)
     project = models.ForeignKey(Project)
     language = models.ForeignKey(Language)
     discription = models.TextField()
     type = models.ForeignKey(ProjectType)
     supervisor = models.ManyToManyField(User)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
 
 
-class NovelTrans(models.Model):
-    name = models.CharField(max_length = 255)
-    projecttrans = models.ForeignKey(ProjectTrans)
+class NovelTranslation(models.Model):
+    name = models.CharField(max_length=255)
+    projecttranslation = models.ForeignKey(ProjectTranslation)
     novel = models.ForeignKey(Novel)
     synopsis = models.TextField()
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
 
 
-class VolumeTrans(models.Model):
-    name = models.CharField(max_length = 255)
-    noveltrans = models.ForeignKey(NovelTrans)
+class VolumeTranslation(models.Model):
+    name = models.CharField(max_length=255)
+    noveltranslation = models.ForeignKey(NovelTranslation)
     volume = models.ForeignKey(Volume)
     synopsis = models.TextField()
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
 
 
-class ChapterTrans(models.Model):
-    name = models.CharField(max_length = 255)
-    noveltrans = models.ForeignKey(VolumeTrans)
+class ChapterTranslation(models.Model):
+    name = models.CharField(max_length=255)
+    noveltranslation = models.ForeignKey(VolumeTranslation)
     chapter = models.ForeignKey(Chapter)
     translator = models.ForeignKey(User)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
-    shown = models.ForeignKey('Revision', on_delete = models.PROTECT, null = True, blank = True,
-                              related_name = "shown+")
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    shown = models.ForeignKey('Revision', on_delete=models.PROTECT, null=True, blank=True,
+                              related_name="shown+")
 
     def text(self):
         return self.shown.data.text
@@ -207,9 +372,9 @@ class Data(models.Model):
         return hasher.hexdigest()
 
 class Revision(models.Model):
-    chaptertrans = models.ForeignKey(ChapterTrans)
-    created = models.DateTimeField(auto_now_add = True)
-    modified = models.DateTimeField(auto_now = True)
+    chaptertranslation = models.ForeignKey(ChapterTranslation)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     data = models.ForeignKey(Data)
     based_off = models.ForeignKey('self', blank = True, null = True, related_name = "revision_set")
@@ -222,8 +387,15 @@ class Note(models.Model):
     modified = models.DateTimeField(auto_now = True)
 
 
+"""
+#########################
+# TRANSLATION LAYER END #
+#########################
+"""
+
+
 class Image(models.Model):
-    image = models.ImageField(upload_to = 'images')
+    image = models.ImageField(upload_to='images')
     subtext = models.TextField()
     user = models.ForeignKey(User)
     novel = models.ForeignKey(Novel, null = True, blank = True)

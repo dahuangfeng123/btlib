@@ -1,6 +1,8 @@
 language: python
 python:
   - "2.7"
+env:
+  - DJANGO_VERSION=Django==1.6.1
 install:
   - pip install coveralls --use-mirrors
   - pip install -q --use-mirrors -r requirements.txt
