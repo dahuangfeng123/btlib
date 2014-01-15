@@ -45,11 +45,6 @@ class ProjectType(models.Model):
     def __unicode__(self):
         return self.name
 
-
-class Genre(models.Model):
-    name = models.CharField(max_length = 256, unique = True)
-    url = models.URLField(max_length = 500, blank = True)
-
 """
 Language Model
 
@@ -88,6 +83,7 @@ Returns Name field.
 class Author(models.Model):
     name = models.CharField(max_length=256, unique=True)
     bio = models.TextField(blank=True)
+    trivia = models.TextField(blank=True)
     url = models.URLField(max_length=500, blank=True)
 
     def __unicode__(self):
@@ -190,7 +186,11 @@ class Novel(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     modified = models.DateTimeField(auto_now = True)
     def __unicode__(self):
-        return self.name
+        if self.romajin:
+            return self.romajin
+        else:
+            return self.name
+
 
     class Meta:
         ordering = ['romajin', 'name']
@@ -233,7 +233,7 @@ class Volume(models.Model):
         super(Volume, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.novel.name + ':' + str(self.number)
+        return self.novel.name + ':' + str( '{0:g}'.format(float(self.number)) )
 
     class Meta:
         ordering = ['order', 'number', 'created']

@@ -1,4 +1,7 @@
-Django<=1.6.1
-Pillow<=2.2.2
+Django>=1.6.1
+Pillow>=2.2.2
 diff-match-patch==20120106
 wsgiref==0.1.2
+djangorestframework=2.3.10
+markdown>=2.3.1
+django-markdown>=0.2.1

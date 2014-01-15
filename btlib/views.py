@@ -1,11 +1,8 @@
-from django.shortcuts import render_to_response, get_object_or_404, redirect
+from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404, redirect
 from btlib.models import *
 from btlib.forms import *
 from django.template import RequestContext
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.db.models import Count
-from django.conf import settings
+#from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 
 
@@ -131,7 +128,7 @@ def form_set(request, frm, obj=None):
 
     elif 'ProjectTrans' in frm:
         if obj is not None:
-            change = get_object_or_404(ProjectTrans, id = obj)
+            change = get_object_or_404(ProjectTranslation, id = obj)
             form = FormProjectTrans(request.POST or None, instance = change)
         else:
             form = FormProjectTrans(request.POST or None)
@@ -140,7 +137,7 @@ def form_set(request, frm, obj=None):
 
     elif 'NovelTrans' in frm:
         if obj is not None:
-            change = get_object_or_404(NovelTrans, id = obj)
+            change = get_object_or_404(NovelTranslation, id = obj)
             form = FormNovelTrans(request.POST or None, instance = change)
         else:
             form = FormNovelTrans(request.POST or None)
@@ -149,7 +146,7 @@ def form_set(request, frm, obj=None):
 
     elif 'VolumeTrans' in frm:
         if obj is not None:
-            change = get_object_or_404(VolumeTrans, id = obj)
+            change = get_object_or_404(VolumeTranslation, id = obj)
             form = FormVolumeTrans(request.POST or None, instance = change)
         else:
             form = FormVolumeTrans(request.POST or None)
@@ -158,7 +155,7 @@ def form_set(request, frm, obj=None):
 
     elif 'ChapterTrans' in frm:
         if obj is not None:
-            change = get_object_or_404(ChapterTrans, id = obj)
+            change = get_object_or_404(ChapterTranslation, id = obj)
             form = FormChapterTrans(request.POST or None, instance = change)
         else:
             form = FormChapterTrans(request.POST or None)
@@ -265,25 +262,25 @@ def form_get(request, frm, obj = None):
             form = FormProject()
     elif 'ProjectTrans' == frm:
         if obj is not None:
-            entry = get_object_or_404(ProjectTrans, id = obj)
+            entry = get_object_or_404(ProjectTranslation, id = obj)
             form = FormProjectTrans(instance = entry)
         else:
             form = FormProjectTrans()
     elif 'NovelTrans' == frm:
         if obj is not None:
-            entry = get_object_or_404(NovelTrans, id = obj)
+            entry = get_object_or_404(NovelTranslation, id = obj)
             form = FormNovelTrans(instance = entry)
         else:
             form = FormNovelTrans()
     elif 'VolumeTrans' == frm:
         if obj is not None:
-            entry = get_object_or_404(VolumeTrans, id = obj)
+            entry = get_object_or_404(VolumeTranslation, id = obj)
             form = FormVolumeTrans(instance = entry)
         else:
             form = FormVolumeTrans()
     elif 'ChapterTrans' == frm:
         if obj is not None:
-            entry = get_object_or_404(ChapterTrans, id = obj)
+            entry = get_object_or_404(ChapterTranslation, id = obj)
             form = FormChapterTrans(instance = entry)
         else:
             form = FormChapterTrans()

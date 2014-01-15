@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from btlib.feeds import Feed
 
 urlpatterns = patterns('django.contrib.flatpages.views',
-                       url(r'^$', 'flatpage', {'url': '/'}, name='btlib_index'),
+                       url(r'^$', 'flatpage', {'url': '/main/'}, name='btlib_index'),
                        url(r'^about/$', 'flatpage', {'url': '/about/'}, name='btlib_about'),
                        url(r'^disclaimer/$', 'flatpage', {'url': '/disclaimer/'}, name='btlib_disclaimer'),
 )

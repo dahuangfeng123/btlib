@@ -63,25 +63,25 @@ class FormProject(ModelForm):
 
 class FormProjectTrans(ModelForm):
     class Meta:
-        model = ProjectTrans
+        model = ProjectTranslation
         exclude = ('modified', 'created')
 
 
 class FormNovelTrans(ModelForm):
     class Meta:
-        model = NovelTrans
+        model = NovelTranslation
         exclude = ('modified', 'created')
 
 
 class FormVolumeTrans(ModelForm):
     class Meta:
-        model = VolumeTrans
+        model = VolumeTranslation
         exclude = ('modified', 'created')
 
 
 class FormChapterTrans(ModelForm):
     class Meta:
-        model = ChapterTrans
+        model = ChapterTranslation
         exclude = ('modified', 'created')
 
 
