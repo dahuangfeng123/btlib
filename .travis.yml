@@ -4,11 +4,10 @@ python:
   - "2.7"
 env:
   - DJANGO_VERSION=1.6.1
-before_install:
+install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq python-dev python-setuptools
   - sudo apt-get install -qq libtiff4-dev libjpeg62-dev zlib1g-dev libfreetype6-dev liblcms1-dev tcl8.5-dev tk8.5-dev
-install:
   - "pip install coveralls --use-mirrors"
   - "pip install --use-mirrors -r requirements.txt"
   - "pip install -e . --use-mirrors"
