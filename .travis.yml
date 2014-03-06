@@ -6,10 +6,9 @@ env:
   - DJANGO_VERSION=1.6.1
 install:
   - "sudo apt-get update -qq"
-  - "sudo apt-get install -qq python-dev python-setuptools libtiff4-dev libjpeg62-dev zlib1g-dev libfreetype6-dev liblcms1-dev tcl8.5-dev tk8.5-dev"
+  - "sudo apt-get install -qq python-dev python-setuptools libtiff4-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms1-dev libwebp-dev tcl8.5-dev tk8.5-dev"
   - "pip install coveralls --use-mirrors"
   - "pip install --use-mirrors -r requirements.txt"
-  - "pip install -e . --use-mirrors"
 script:
   - coverage run --source=btlib quicktest.py btlib
   - coverage report -m
