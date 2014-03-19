@@ -1,0 +1,127 @@
+{% load staticfiles %}
+{% load compress %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <title>{% block title %}{% endblock %}</title>
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'btlib/css/foundation.css' %}">
+        <style>/*
+            body {
+                margin-top: 2.8125rem;
+            }
+            .fixed, .left-off-canvas-menu {
+                z-index: 1003;
+            }
+            .move-right .left-off-canvas-menu {
+                -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+                left: 0;
+            }
+            .left-off-canvas-menu {
+                -webkit-transform: translate3d(-100%, 0, 0);
+                transform: translate3d(-100%, 0, 0);
+                left: -100%;
+                -webkit-transition: 0.5s;
+                transition: 0.5s;
+            }
+            .move-right> .inner-wrap {
+                -webkit-transform: none;
+                transform: none;
+            }
+            .move-right a.exit-off-canvas {
+                -webkit-transition: none;
+                transition: none;
+            }*/
+        </style>
+    {% endcompress %}
+    {% compress js %}
+        <script src="{% static 'btlib/js/vendor/modernizr.js' %}"></script>
+    {% endcompress %}
+</head>
+<body>
+<div class="off-canvas-wrap">
+    <div class="inner-wrap">
+        <div class="fixed">
+        <nav class="tab-bar">
+            <section class="left-small">
+                <a class="left-off-canvas-toggle menu-icon"><span></span></a>
+            </section>
+
+            <section class="middle tab-bar-section">
+                <h1 class="title">Baka-Tsuki</h1>
+            </section>
+
+            <section class="right-small">
+                <a class="right-off-canvas-toggle menu-icon"><span></span></a>
+            </section>
+        </nav>
+        </div>
+
+        <aside class="left-off-canvas-menu">
+            <ul class="off-canvas-list">
+                <li><label>Baka-Tsuki</label></li>
+                <li><a href="#">The Psychohistorians</a></li>
+                <li><a href="#">The Encyclopedists</a></li>
+                <li><a href="#">The Mayors</a></li>
+                <li><a href="#">The Traders</a></li>
+                <li><a href="#">The Merchant Princes</a></li>
+                <li><label>Foundation and Empire</label></li>
+                <li><a href="#">The General</a></li>
+                <li><a href="#">The Mule</a></li>
+                <li><label>Second Foundation</label></li>
+                <li><a href="#">Search by the Mule</a></li>
+                <li><a href="#">Search by the Foundation</a></li>
+            </ul>
+        </aside>
+
+        <aside class="right-off-canvas-menu">
+            <ul class="off-canvas-list">
+                <li><label>Users</label></li>
+                <li><a href="#">Hari Seldon</a></li>
+                <li><a href="#">R. Giskard Reventlov</a></li>
+                <li><a href="#">R. Daneel Olivaw</a></li>
+                <li><a href="#">The Mule</a></li>
+                <li><a href="#">Dors Venabili</a></li>
+                <li><a href="#">Yugo Amaryl</a></li>
+                <li><a href="#">The Mule</a></li>
+                <li><a href="#">Emperor Cleon I</a></li>
+                <li><a href="#">Gaal Dornick</a></li>
+                <li><a href="#">Bel Riose</a></li>
+                <li><a href="#">Salvor Hardin</a></li>
+                <li><a href="#">Bel Riose</a></li>
+            </ul>
+        </aside>
+
+        <section class="main-section">
+            <div class="row">
+                <div class="large-12 columns">
+                    <br><br><br>
+
+                    {% block header %}<h1>BTLib</h1>{% endblock %}
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
+        </section>
+
+        <a class="exit-off-canvas"></a>
+
+    </div>
+</div>
+{% compress js %}
+    <script src="{% static 'btlib/js/vendor/jquery.js' %}"></script>
+    <script src="{% static 'btlib/js/vendor/fastclick.js' %}"></script>
+    <script src="{% static 'btlib/js/foundation.min.js' %}"></script>
+    <script>
+        $(document).foundation();
+        $(window).resize(function(){
+            $('.off-canvas-wrap,#main-nav,.exit-off-canvas').height($(this).height());
+        });
+    </script>
+{% endcompress %}
+</body>
+</html>

@@ -72,3 +72,5 @@ node_modules
 # http://www.jetbrains.com/pycharm/webhelp/project.html
 .idea
 .iml
+*.db
+dev/
